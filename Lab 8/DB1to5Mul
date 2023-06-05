@@ -1,0 +1,67 @@
+Start: 
+ CLO 
+ MOV AL,0 ; Copy 0000000 into AL 
+ OUT 02 ; Send AL value to PORT 02 2nd segment 
+ MOV AL,1 ; Copy 0000001 into AL 
+ OUT 02 ; Send AL value to PORT 02 1st segment 
+ MOV AL,1 ; Copy 1 to AL to hold final MUL answer 
+ MOV BL,5 ; Copy 5 to Get 1-5 MUL 
+ MOV CL,F0 ; Copy 11110000 to CL for seperate 1st digit of final anser 
+ MOV DL,0F ; Copy 00001111 to DL for seperate 2st digit of final anser 
+ 
+Loop: 
+ MUL AL,BL ; Get Multiplication of AL,BL and store final answer to AL 
+ DEC BL ; Decrement BL by 1 
+ JNZ LOOP ; Repeat until BL is Zero 
+ 
+ AND CL,AL ; Seperate 1st digit of final hexa and store it on CL 
+ SHR CL 
+ SHR CL 
+ SHR CL 
+ SHR CL 
+ 
+ AND DL,AL ; Seperate 2st digit of final hexa and store it on DL 
+
+ MOV BL,FA ; Store Seven segment display hexa values into ram 
+ MOV [0],BL 
+ MOV BL,0A 
+ MOV [1],BL 
+ MOV BL,B6 
+ MOV [2],BL 
+ MOV BL,9E 
+ MOV [3],BL 
+ MOV BL,4E 
+ MOV [4],BL 
+ MOV BL,DB 
+ MOV [5],BL 
+ MOV BL,FB 
+ MOV [6],BL 
+ MOV BL,8A 
+ MOV [7],BL 
+ MOV BL,FE 
+ MOV [8],BL 
+ MOV BL,DE 
+ MOV [9],BL 
+ MOV BL,EE 
+ MOV [A],BL 
+ MOV BL,7B 
+ MOV [B],BL 
+ MOV BL,F0 
+ MOV [C],BL 
+ MOV BL,3E 
+ MOV [D],BL 
+ MOV BL,F4 
+ MOV [E],BL 
+ MOV BL,E4 
+ MOV [F],BL 
+ 
+ 
+ MOV AL,[CL] ; Copy Ram [CL] position value into AL 
+ OUT 02 ; Send AL value to PORT 02 2nd Segment 
+ 
+ MOV AL,[DL] ; Copy Ram [DL] position value in to al 
+ ADD AL,1 ; select 1st segment in port 02 
+ OUT 02 ; Send AL value to PORT 02 1st Segment 
+ 
+ END ; Stop the program
+ 

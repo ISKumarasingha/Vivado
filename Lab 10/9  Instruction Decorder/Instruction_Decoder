@@ -1,0 +1,81 @@
+----------------------------------------------------------------------------------
+-- Company: 
+-- Engineer: 
+-- 
+-- Create Date: 06/01/2023 10:14:22 AM
+-- Design Name: 
+-- Module Name: Instruction_Decoder - Behavioral
+-- Project Name: 
+-- Target Devices: 
+-- Tool Versions: 
+-- Description: 
+-- 
+-- Dependencies: 
+-- 
+-- Revision:
+-- Revision 0.01 - File Created
+-- Additional Comments:
+-- 
+----------------------------------------------------------------------------------
+
+
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+
+-- Uncomment the following library declaration if using
+-- arithmetic functions with Signed or Unsigned values
+--use IEEE.NUMERIC_STD.ALL;
+
+-- Uncomment the following library declaration if instantiating
+-- any Xilinx leaf cells in this code.
+--library UNISIM;
+--use UNISIM.VComponents.all;
+
+entity Instruction_Decoder is
+    Port ( Instruction : in STD_LOGIC_VECTOR (11 downto 0);
+           Reg_Check_Jump : in STD_LOGIC_VECTOR (3 downto 0);
+           Reg_EN : out STD_LOGIC_VECTOR (2 downto 0);
+           Load_Select : out STD_LOGIC;
+           Immediate_Value : out STD_LOGIC_VECTOR (3 downto 0);
+           Reg_S_Mux_1 : out STD_LOGIC_VECTOR (2 downto 0);
+           Reg_S_Mux_2 : out STD_LOGIC_VECTOR (2 downto 0);
+           M_Add_Sub : out STD_LOGIC;
+           Jump_Flag : out STD_LOGIC;
+           Address_Jump : out STD_LOGIC_VECTOR (2 downto 0));
+end Instruction_Decoder;
+
+architecture Behavioral of Instruction_Decoder is
+
+component Decoder_2_to_4 
+    Port ( I : in STD_LOGIC_VECTOR (1 downto 0);
+           EN : in STD_LOGIC;
+           Y : out STD_LOGIC_VECTOR (3 downto 0));
+end component;
+
+signal ins_select : STD_LOGIC_VECTOR (11 downto 10);
+signal Dec_out ,l : STD_LOGIC_VECTOR (3 downto 0 );
+signal en , Q , D : STD_LOGIC ;
+
+
+begin
+ins_select <= Instruction (11 downto 10);
+Decoder_0 : Decoder_2_to_4
+    port map(I => ins_select,
+             EN => '1',
+             Y => Dec_out );
+        
+
+Reg_EN <= Instruction (9 downto 7); -- Select Register Enable 
+
+Load_Select <=(Dec_out(2) OR Dec_out(3)) AND ( NOT Instruction(0) ) ; -- select 4_bit adder_sub_value or Immediate value 
+
+Immediate_Value <= Instruction (3 downto 0); 
+
+Reg_S_Mux_1 <= Instruction (9 downto 7);
+Reg_S_Mux_2 <= Instruction (6 downto 4);
+
+M_Add_Sub <= ( Dec_out(0) OR Dec_out(1) ) AND Instruction (10);
+
+Jump_Flag <= Dec_out (3);
+Address_Jump <= Instruction (2 downto 0);
+end Behavioral;

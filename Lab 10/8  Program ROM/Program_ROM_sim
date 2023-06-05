@@ -1,0 +1,31 @@
+entity Program_Rom_Sim is
+--  Port ( );
+end Program_Rom_Sim;
+
+architecture Behavioral of Program_Rom_Sim is
+COMPONENT Program_Rom
+Port ( Selector : in STD_LOGIC_VECTOR (2 downto 0);
+           Q_out : out STD_LOGIC_VECTOR (11 downto 0));
+END COMPONENT ;
+SIGNAL Selector : STD_LOGIC_VECTOR (2 downto 0);
+SIGNAL  Q_out :  STD_LOGIC_VECTOR (11 downto 0);
+
+begin
+UUT :Program_Rom PORT MAP (
+ Selector=>Selector,
+ Q_out=>Q_out
+
+);
+process
+begin
+Selector<="000";
+wait for 100ns;
+Selector<="001";
+wait for 100 ns;
+Selector<="010";
+wait ;
+
+
+end process;
+
+end Behavioral;

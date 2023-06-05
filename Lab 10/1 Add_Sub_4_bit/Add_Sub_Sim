@@ -1,0 +1,80 @@
+----------------------------------------------------------------------------------
+-- Company: 
+-- Engineer: 
+-- 
+-- Create Date: 05/31/2023 09:47:06 AM
+-- Design Name: 
+-- Module Name: RC_Add_Sub_Sim - Behavioral
+-- Project Name: 
+-- Target Devices: 
+-- Tool Versions: 
+-- Description: 
+-- 
+-- Dependencies: 
+-- 
+-- Revision:
+-- Revision 0.01 - File Created
+-- Additional Comments:
+-- 
+----------------------------------------------------------------------------------
+
+
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+
+-- Uncomment the following library declaration if using
+-- arithmetic functions with Signed or Unsigned values
+--use IEEE.NUMERIC_STD.ALL;
+
+-- Uncomment the following library declaration if instantiating
+-- any Xilinx leaf cells in this code.
+--library UNISIM;
+--use UNISIM.VComponents.all;
+
+entity RC_Add_Sub_Sim is
+--  Port ( );
+end RC_Add_Sub_Sim;
+
+architecture Behavioral of RC_Add_Sub_Sim is
+
+COMPONENT RC_Add_Sub_4
+    Port (  A : in STD_LOGIC_VECTOR(3 downto 0) ; 
+            B : in STD_LOGIC_VECTOR(3 downto 0) ; 
+            M : in STD_LOGIC;
+            C_out : out STD_LOGIC;
+            Over_Flow : out STD_LOGIC;
+            S : out STD_LOGIC_VECTOR(3 downto 0)) ; 
+END COMPONENT;
+
+    signal A, B :STD_LOGIC_VECTOR (3 downto 0) ;
+    signal S:   STD_LOGIC_VECTOR(3 downto 0) ; 
+    signal M  :  STD_LOGIC;
+    signal C_out ,Over_Flow:  STD_LOGIC;
+        
+begin
+UUT : RC_Add_Sub_4 PORT MAP(
+   A=>A,
+   B=>B,
+   M=>M,
+   S=>S,
+   C_out => C_out,
+   Over_Flow=>Over_Flow );
+ 
+process
+  begin
+    M<='0'; -- when M=0 then, active the adder
+      A <= "1000";
+      B <= "1000";        
+      wait for 100ns;
+    M<='1';      -- when M==1 then, active the substractor
+      wait for 100ns;
+      
+     M<='0'; -- when M=0 then, active the adder
+        A <= "1001";
+        B <= "1000";        
+        wait for 100ns;
+      M<='1';      -- when M==1 then, active the substractor
+        wait for 100ns;
+    wait;
+ end process;
+end Behavioral;

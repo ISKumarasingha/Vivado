@@ -1,0 +1,100 @@
+----------------------------------------------------------------------------------
+-- Company: 
+-- Engineer: 
+-- 
+-- Create Date: 03/23/2023 07:27:25 AM
+-- Design Name: 
+-- Module Name: TB_Mux_8_to_1 - Behavioral
+-- Project Name: 
+-- Target Devices: 
+-- Tool Versions: 
+-- Description: 
+-- 
+-- Dependencies: 
+-- 
+-- Revision:
+-- Revision 0.01 - File Created
+-- Additional Comments:
+-- 
+----------------------------------------------------------------------------------
+
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+
+-- Uncomment the following library declaration if using
+-- arithmetic functions with Signed or Unsigned values
+--use IEEE.NUMERIC_STD.ALL;
+
+-- Uncomment the following library declaration if instantiating
+-- any Xilinx leaf cells in this code.
+--library UNISIM;
+--use UNISIM.VComponents.all;
+
+entity TB_Mux_8_to_1 is
+--  Port ( );
+end TB_Mux_8_to_1;
+
+architecture Behavioral of TB_Mux_8_to_1 is
+COMPONENT Mux_8_to_1
+    Port ( D : in STD_LOGIC_VECTOR (7 downto 0);
+           S : in STD_LOGIC_VECTOR (2 downto 0);
+           EN : in STD_LOGIC;
+           Y : out STD_LOGIC);
+END COMPONENT;
+        signal g : STD_LOGIC_VECTOR (2 downto 0);
+        signal BT_gate : STD_LOGIC;
+        SIGNAL d : STD_LOGIC_VECTOR (7 downto 0);
+        signal Y : STD_LOGIC;
+
+begin
+UUT: Mux_8_to_1 PORT MAP(S => g,
+                         EN => BT_gate,
+                         D => d, 
+                         Y => Y);
+
+process
+begin
+    g(0) <= '0'; -- set initial values
+    g(1) <= '0';
+    g(2) <= '0';
+    BT_gate <= '1';
+    d(0) <= '1';
+    d(1) <= '0';
+    d(2) <= '1';
+    d(3) <= '0';
+    d(4) <= '1';
+    d(5) <= '1';
+    d(6) <= '1';
+    d(7) <= '1';   
+    WAIT FOR 100 ns; -- after 100 ns change inputs
+    g(0) <= '1'; 
+    g(1) <= '1';
+    g(2) <= '0';
+    d(0) <= '0';
+    d(6) <= '1';
+    d(5) <= '0';
+    d(2) <= '0';
+    WAIT FOR 100 ns; --change again
+    g(0) <= '1'; 
+    g(1) <= '0';
+    g(2) <= '0';
+    d(6) <= '0';
+    d(4) <= '1';
+    d(7) <= '0';
+    d(2) <= '1';
+    WAIT FOR 100 ns; --change again
+    g(0) <= '0'; 
+    g(1) <= '1';
+    g(2) <= '1';
+    d(4) <= '0';
+    d(3) <= '1';
+    d(5) <= '1';
+    WAIT FOR 100 ns; --change again
+    g(0) <= '0';
+    g(1) <= '1';
+    g(2) <= '0';
+    d(3) <= '0';
+    d(2) <= '1';
+    WAIT; -- will wait forever
+end process;
+end Behavioral;

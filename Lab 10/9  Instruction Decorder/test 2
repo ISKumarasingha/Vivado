@@ -1,0 +1,46 @@
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+entity Ins_Decoder is
+    Port (  RC : in STD_LOGIC_VECTOR (3 downto 0);
+            INS : in STD_LOGIC_VECTOR (11 downto 0);
+            Clk : in STD_LOGIC;
+            JMPF : out STD_LOGIC;
+            SUB : out STD_LOGIC;
+            LS : out STD_LOGIC;
+            RegA : out STD_LOGIC_VECTOR (2 downto 0);
+            RegB : out STD_LOGIC_VECTOR (2 downto 0);
+            Reg_EN : out STD_LOGIC_VECTOR (2 downto 0);
+            IMDVAL : out STD_LOGIC_VECTOR (3 downto 0);
+            AD_JMP : out STD_LOGIC_VECTOR (2 downto 0));
+end Ins_Decoder;
+
+architecture Behavioral of Ins_Decoder is
+begin
+ process (Clk) begin
+  if (rising_edge(Clk)) then
+    Move <= 
+    JMPF <= NOT(RC(3) OR RC(2) OR RC(1) OR RC(0)) AND (INS(11) AND INS(10));
+    SUB <= NOT(INS(11)) AND INS(10);
+    LS <= INS(11) AND NOT(INS(10));
+
+ RegA(2) <= INS(9);
+ RegA(1) <= INS(8);
+ RegA(0) <= INS(7);
+
+ RegB(2) <= INS(6);
+ RegB(1) <= INS(5);
+ RegB(0) <= INS(4);
+
+ Reg_EN(2) <= INS(9);
+ Reg_EN(1) <= INS(8);
+ Reg_EN(0) <= INS(7);
+ IMDVAL(3) <= INS(3);
+ IMDVAL(2) <= INS(2);
+ IMDVAL(1) <= INS(1);
+ IMDVAL(0) <= INS(0);
+ AD_JMP(2) <= INS(2);
+ AD_JMP(1) <= INS(1);
+ AD_JMP(0) <= INS(0);
+ end if;
+end process;
+end Behavioral;
