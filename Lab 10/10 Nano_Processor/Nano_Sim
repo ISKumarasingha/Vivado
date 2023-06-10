@@ -1,0 +1,80 @@
+----------------------------------------------------------------------------------
+-- Company: 
+-- Engineer: 
+-- 
+-- Create Date: 06/07/2023 08:14:29 PM
+-- Design Name: 
+-- Module Name: Nano_Sim - Behavioral
+-- Project Name: 
+-- Target Devices: 
+-- Tool Versions: 
+-- Description: 
+-- 
+-- Dependencies: 
+-- 
+-- Revision:
+-- Revision 0.01 - File Created
+-- Additional Comments:
+-- 
+----------------------------------------------------------------------------------
+
+
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+
+-- Uncomment the following library declaration if using
+-- arithmetic functions with Signed or Unsigned values
+--use IEEE.NUMERIC_STD.ALL;
+
+-- Uncomment the following library declaration if instantiating
+-- any Xilinx leaf cells in this code.
+--library UNISIM;
+--use UNISIM.VComponents.all;
+
+entity Nano_Sim is
+--  Port ( );
+end Nano_Sim;
+
+architecture Behavioral of Nano_Sim is
+component Nano_Processor
+Port ( Clk : in STD_LOGIC;
+           Reset : in STD_LOGIC;
+           SegDis : out STD_LOGIC_VECTOR (6 downto 0);
+           Over_Flow : out STD_LOGIC;
+           Zero : out STD_LOGIC;
+           Led_out : out STD_LOGIC_VECTOR (3 downto 0)
+           --Select_EN : out STD_LOGIC_VECTOR (3 downto 0)
+           );
+end component;
+    signal Clk,Zero,Over_Flow,Reset :STD_LOGIC;
+    signal  SegDis : STD_LOGIC_VECTOR (6 downto 0);
+    signal  Led_out :  STD_LOGIC_VECTOR (3 downto 0);
+    
+begin
+UUT :Nano_Processor port map (
+                Clk=>Clk,
+                Zero=>Zero,
+                Over_Flow=>Over_Flow,
+                Reset=>Reset,
+                SegDis=>SegDis,
+                Led_out=>Led_out
+);
+
+Clk_process : process
+begin
+    Clk <= '0';
+    wait for 2ns;
+    Clk <= '1';
+    wait for 2ns;
+end process;
+
+Nano_process : process
+begin 
+   Reset <= '1';
+   wait for 100ns;
+   Reset <= '0';
+   wait for 2000ns;
+   wait;
+
+end process;
+end Behavioral;

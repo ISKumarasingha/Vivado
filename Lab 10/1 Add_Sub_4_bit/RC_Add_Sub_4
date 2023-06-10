@@ -31,12 +31,14 @@ use IEEE.STD_LOGIC_1164.ALL;
 --use UNISIM.VComponents.all;
 
 entity RC_Add_Sub_4 is
-Port (A : in STD_LOGIC_VECTOR(3 downto 0) ; 
-      B : in STD_LOGIC_VECTOR(3 downto 0) ; 
-      M : in STD_LOGIC;
-      S : out STD_LOGIC_VECTOR(3 downto 0);
-      C_out : out STD_LOGIC;
-      Over_Flow : out STD_LOGIC);
+Port ( A : in STD_LOGIC_VECTOR(3 downto 0) ; 
+       B : in STD_LOGIC_VECTOR(3 downto 0) ; 
+       M : in STD_LOGIC; -- M=1 -> Sub  
+       C_out : out STD_LOGIC;
+       Over_Flow : out STD_LOGIC;
+       S : out STD_LOGIC_VECTOR(3 downto 0)) ; 
+
+     
 end RC_Add_Sub_4;
 
 architecture Behavioral of RC_Add_Sub_4 is
@@ -51,7 +53,7 @@ component FA
 end component; 
 
 SIGNAL FA0_S, FA0_C, FA1_S, FA1_C, FA2_S, FA2_C, FA3_S, FA3_C : std_logic; 
-SIGNAL B1M, B2M, B3M  : std_logic; 
+SIGNAL B0M, B1M, B2M, B3M  : std_logic; 
 
 begin 
  FA_0 : FA 
@@ -84,11 +86,13 @@ begin
          B => B3M, 
          C_in => FA2_C, 
          S => S(3), 
-         C_out => FA3_C); 
-
+         C_out => FA3_C);  
+         
+B0M <= B(0) XOR M;
 B1M <= B(1) XOR M;
 B2M <= B(2) XOR M;
 B3M <= B(3) XOR M;
-C_out <= FA3_C;
+
+C_out <= FA3_C XOR M;
 Over_Flow <=(FA2_C XOR FA3_C);
 end Behavioral; 

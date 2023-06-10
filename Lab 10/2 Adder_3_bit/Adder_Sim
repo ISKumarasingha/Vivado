@@ -18,6 +18,7 @@
 -- 
 ----------------------------------------------------------------------------------
 
+
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 
@@ -37,30 +38,45 @@ end RC_Add_3_Sim;
 architecture Behavioral of RC_Add_3_Sim is
 COMPONENT RCA_3
 Port ( A: in STD_LOGIC_VECTOR (2 downto 0); 
-       B : in STD_LOGIC_VECTOR (2 downto 0); 
-       C_in : in STD_LOGIC; 
-       S : out STD_LOGIC_VECTOR (2 downto 0); 
-       C_out : out STD_LOGIC); 
+
+      B : in STD_LOGIC_VECTOR (2 downto 0); 
+     
+      C_in : in STD_LOGIC; 
+      
+      S : out STD_LOGIC_VECTOR (2 downto 0); 
+ 
+      C_out : out STD_LOGIC); 
+      
 END COMPONENT;
 
 signal A, B , S : STD_LOGIC_VECTOR (2 downto 0);
 signal C_in, C_out : STD_LOGIC;
 
 begin
-UUT : RCA_3 PORT MAP (A=>A,
-                      B=>B,
-                      S=>S,
-                      C_in=> C_in,
-                      C_out =>C_out);
+UUT : RCA_3 PORT MAP (
+A=>A,
+B=>B,
+S=>S,
+ C_in=> C_in,
+  C_out =>C_out
+
+);
 
 process
 begin
-      A<="001";
-      C_in<='0';
-      B<="001";
-      wait for 100ns;
-      B(0)<='0';
-      wait for 100ns;
-      wait ;
+A<="001";
+C_in<='0';
+B<="001";
+
+
+wait for 100ns;
+B(0)<='0';
+wait for 100ns;
+
+B <="111";
+wait for 100ns;
+
+wait ;
+
 end process;
 end Behavioral;

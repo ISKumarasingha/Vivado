@@ -2,9 +2,9 @@
 -- Company: 
 -- Engineer: 
 -- 
--- Create Date: 05/31/2023 03:53:46 PM
+-- Create Date: 06/01/2023 09:39:52 AM
 -- Design Name: 
--- Module Name: Resister__Bank - Behavioral
+-- Module Name: Program_Rom - Behavioral
 -- Project Name: 
 -- Target Devices: 
 -- Tool Versions: 
@@ -21,109 +21,37 @@
 
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.NUMERIC_STD.ALL;
 
 -- Uncomment the following library declaration if using
 -- arithmetic functions with Signed or Unsigned values
---use IEEE.NUMERIC_STD.ALL;
-
 -- Uncomment the following library declaration if instantiating
 -- any Xilinx leaf cells in this code.
 --library UNISIM;
 --use UNISIM.VComponents.all;
 
-entity Resister_Bank is
-    Port ( R : in STD_LOGIC_VECTOR (3 downto 0);
-           Res : in STD_LOGIC;
-           Reg_EN : STD_LOGIC_VECTOR (2 downto 0);
-           Clk : in STD_LOGIC;
-           EN : in STD_LOGIC;
-           Q0 : out STD_LOGIC_VECTOR (3 downto 0);
-           Q1 : out STD_LOGIC_VECTOR (3 downto 0);
-           Q2 : out STD_LOGIC_VECTOR (3 downto 0);
-           Q3 : out STD_LOGIC_VECTOR (3 downto 0);
-           Q4 : out STD_LOGIC_VECTOR (3 downto 0);
-           Q5 : out STD_LOGIC_VECTOR (3 downto 0);
-           Q6 : out STD_LOGIC_VECTOR (3 downto 0);
-           Q7 : out STD_LOGIC_VECTOR (3 downto 0));
-end Resister_Bank;
+entity Program_Rom is
+    Port ( Selector : in STD_LOGIC_VECTOR (2 downto 0);
+           Q_out : out STD_LOGIC_VECTOR (11 downto 0));
+end Program_Rom;
 
-architecture Behavioral of Resister_Bank is
-component Reg
-    Port ( D : in STD_LOGIC_VECTOR (3 downto 0);
-           EN : in STD_LOGIC;
-           Clk : in STD_LOGIC;
-           Res : in STD_LOGIC;
-           Q : out STD_LOGIC_VECTOR (3 downto 0));
-end component;
+architecture Behavioral of Program_Rom is
 
-component Decode_3_to_8 
-    Port ( I : in STD_LOGIC_VECTOR (2 downto 0);
-           EN : in STD_LOGIC;
-           Y : out STD_LOGIC_VECTOR (7 downto 0));
-end component;
-    signal D : STD_LOGIC_VECTOR (7 downto 0);
-    
+type rom_type is array (0 to 7) of std_logic_vector (11 downto 0);
+
+signal instruction_ROM : rom_type := (  
+        "100010000111", -- Move 15 to R1
+        "100100000001", -- Move 1 to R2
+        "010100000000", -- Neg R2 value
+        "000010100000", -- Add R1 & R2
+        "000010100000", -- Add R1 & R2
+        "000010100000", -- Add R1 & R2
+         "000010100000", -- Add R1 & R2
+        "110000000000" -- jump 
+       
+        -- "110010000010"  -- jump 
+);
+
 begin
-    Decode_3_to_8_0 : Decode_3_to_8
-    Port map( I => Reg_EN,
-              EN => EN,
-              Y => D );
-
-    Reg_0 : Reg
-    port map( D => R,
-              EN => D(0),
-              Clk => Clk,
-              Res => Res,
-              Q => Q0 );
-
-    Reg_1 : Reg
-    port map( D => R,
-              EN => D(1),
-              Clk => Clk,
-              Res => Res,
-              Q => Q1 );
-
-    Reg_2 : Reg
-    port map( D => R,
-              EN => D(2),
-              Clk => Clk,
-              Res => Res,
-              Q => Q2 );
-
-    Reg_3 : Reg
-    port map( D => R,
-              EN => D(3),
-              Clk => Clk,
-              Res => Res,
-              Q => Q3 );
-
-    Reg_4 : Reg
-    port map( D => R,
-              EN => D(4),
-              Clk => Clk,
-              Res => Res,
-              Q => Q4 );
-
-    Reg_5 : Reg
-    port map( D => R,
-              EN => D(5),
-              Clk => Clk,
-              Res => Res,
-              Q => Q5 );
-
-    Reg_6 : Reg
-    port map( D => R,
-              EN => D(6),
-              Clk => Clk,
-              Res => Res,
-              Q => Q6 );
-
-    Reg_7 : Reg
-    port map( D => R,
-              EN => D(7),
-              Clk => Clk,
-              Res => Res,
-              Q => Q7 );
-
-
+ Q_out <= instruction_ROM (to_integer(unsigned(Selector)));
 end Behavioral;

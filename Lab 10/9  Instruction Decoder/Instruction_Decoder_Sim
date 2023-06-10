@@ -1,0 +1,75 @@
+----------------------------------------------------------------------------------
+-- Company: 
+-- Engineer: 
+-- 
+-- Create Date: 06/07/2023 06:45:09 PM
+-- Design Name: 
+-- Module Name: Instruction_Decoder_Sim - Behavioral
+-- Project Name: 
+-- Target Devices: 
+-- Tool Versions: 
+-- Description: 
+-- 
+-- Dependencies: 
+-- 
+-- Revision:
+-- Revision 0.01 - File Created
+-- Additional Comments:
+-- 
+----------------------------------------------------------------------------------
+
+
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+
+-- Uncomment the following library declaration if using
+-- arithmetic functions with Signed or Unsigned values
+--use IEEE.NUMERIC_STD.ALL;
+
+-- Uncomment the following library declaration if instantiating
+-- any Xilinx leaf cells in this code.
+--library UNISIM;
+--use UNISIM.VComponents.all;
+
+entity Instruction_Decoder_Sim is
+--  Port ( );
+end Instruction_Decoder_Sim;
+
+architecture Behavioral of Instruction_Decoder_Sim is
+component Instruction_Decoder
+ Port ( Instruction : in STD_LOGIC_VECTOR (11 downto 0);
+          Reg_Check_Jump : in STD_LOGIC_VECTOR (3 downto 0);
+          Reg_EN : out STD_LOGIC_VECTOR (2 downto 0);
+          Load_Select : out STD_LOGIC;
+          Immediate_Value : out STD_LOGIC_VECTOR (3 downto 0);
+          Reg_S_Mux_1 : out STD_LOGIC_VECTOR (2 downto 0);
+          Reg_S_Mux_2 : out STD_LOGIC_VECTOR (2 downto 0);
+          M_Add_Sub : out STD_LOGIC;
+          Jump_Flag : out STD_LOGIC;
+          Address_Jump : out STD_LOGIC_VECTOR (2 downto 0));
+end component;
+signal Instruction : STD_LOGIC_VECTOR (11 downto 0);
+signal Reg_EN,Reg_S_Mux_2,Reg_S_Mux_1,Address_Jump :STD_LOGIC_VECTOR (2 downto 0);
+signal Reg_Check_Jump,Immediate_Value : STD_LOGIC_VECTOR (3 downto 0);
+signal Load_Select,M_Add_Sub,Jump_Flag : STD_LOGIC;
+
+begin
+UUT :Instruction_Decoder 
+PORT MAP (
+Instruction => Instruction,
+Reg_Check_Jump => Reg_Check_Jump,
+Reg_EN => Reg_EN,
+Load_Select  => Load_Select,
+Immediate_Value => Immediate_Value,
+Reg_S_Mux_1 => Reg_S_Mux_1,
+Reg_S_Mux_2 => Reg_S_Mux_2,
+M_Add_Sub => M_Add_Sub,
+Jump_Flag => Jump_Flag,
+Address_Jump => Address_Jump
+);
+Process
+begin
+Instruction <= "010100000000";
+wait;
+end process;
+end Behavioral;

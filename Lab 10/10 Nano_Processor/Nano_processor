@@ -36,12 +36,18 @@ entity Nano_Processor is
            Reset : in STD_LOGIC;
            SegDis : out STD_LOGIC_VECTOR (6 downto 0);
            Over_Flow : out STD_LOGIC;
-           C_out_A : out STD_LOGIC;
            Zero : out STD_LOGIC;
-           Led_out : out STD_LOGIC_VECTOR (3 downto 0));
+           Led_out : out STD_LOGIC_VECTOR (3 downto 0);
+           Select_EN : out STD_LOGIC_VECTOR (3 downto 0)
+           );
 end Nano_Processor;
 
 architecture Behavioral of Nano_Processor is
+
+COMPONENT LUT_16_7 
+    Port ( address : in STD_LOGIC_VECTOR (3 downto 0);
+           data : out STD_LOGIC_VECTOR (6 downto 0));
+end COMPONENT;
 
 COMPONENT Program_Counter_3_bit
     Port ( I : in STD_LOGIC_VECTOR (2 downto 0);
@@ -60,7 +66,7 @@ COMPONENT Instruction_Decoder
            Reg_Check_Jump : in STD_LOGIC_VECTOR (3 downto 0);
            Reg_EN : out STD_LOGIC_VECTOR (2 downto 0);
            Load_Select : out STD_LOGIC;
-           Immediate_Value : out STD_LOGIC_VECTOR (2 downto 0);
+           Immediate_Value : out STD_LOGIC_VECTOR (3 downto 0);
            Reg_S_Mux_1 : out STD_LOGIC_VECTOR (2 downto 0);
            Reg_S_Mux_2 : out STD_LOGIC_VECTOR (2 downto 0);
            M_Add_Sub : out STD_LOGIC;
@@ -69,8 +75,8 @@ COMPONENT Instruction_Decoder
 end COMPONENT;
 
 COMPONENT Mux_2_way_4_bit
-    Port ( R1 : in STD_LOGIC_VECTOR (3 downto 0);
-           R2: in STD_LOGIC_VECTOR (3 downto 0);
+    Port ( R0 : in STD_LOGIC_VECTOR (3 downto 0);
+           R1: in STD_LOGIC_VECTOR (3 downto 0);
            S : in STD_LOGIC;
            EN : in STD_LOGIC;
            Y : out STD_LOGIC_VECTOR (3 downto 0));
@@ -91,19 +97,19 @@ COMPONENT Mux_8_way_4_bit
 END COMPONENT;
 
 COMPONENT Mux_2_way_3_bit
-     Port(R1 : in STD_LOGIC_VECTOR (2 downto 0);
-          R2 : in STD_LOGIC_VECTOR (2 downto 0);
+     Port(R0 : in STD_LOGIC_VECTOR (2 downto 0);
+          R1 : in STD_LOGIC_VECTOR (2 downto 0);
           S : in STD_LOGIC;
           EN : in STD_LOGIC;
           Y : out STD_LOGIC_VECTOR (2 downto 0)); --use for pc_0
 END COMPONENT;
 
-COMPONENT Resister_Bank 
+COMPONENT Register_Bank 
     Port ( R : in STD_LOGIC_VECTOR (3 downto 0);
            Res : in STD_LOGIC;
            Reg_EN : STD_LOGIC_VECTOR (2 downto 0);
            Clk : in STD_LOGIC;
-           EN : in STD_LOGIC;
+        --   EN : in STD_LOGIC;
            Q0 : out STD_LOGIC_VECTOR (3 downto 0);
            Q1 : out STD_LOGIC_VECTOR (3 downto 0);
            Q2 : out STD_LOGIC_VECTOR (3 downto 0);
@@ -138,22 +144,27 @@ end COMPONENT;
 
 
     signal Sig_PC_0, RCA_3_0_S, Address_Jump, PC_0_In,reg_en,Reg_S_Mux_1,Reg_S_Mux_2 : STD_LOGIC_VECTOR(2 downto 0);
-    signal Num_1_bit_4, Num_2_bit_4,Add_Sub_out,Immediate_val,ROM_input,Resister_Bank_Q0,
-    Resister_Bank_Q1,Resister_Bank_Q2,Resister_Bank_Q3,Resister_Bank_Q4,Resister_Bank_Q5,Resister_Bank_Q6,
-    Resister_Bank_Q7 : STD_LOGIC_VECTOR(3 downto 0);
+    signal Num_1_bit_4, Num_2_bit_4,Add_Sub_out,ROM_input,Resister_Bank_Q0,Resister_Bank_Q1,Resister_Bank_Q2,Resister_Bank_Q3,Immediate_val,Resister_Bank_Q4,Resister_Bank_Q5,Resister_Bank_Q6,Resister_Bank_Q7 : STD_LOGIC_VECTOR(3 downto 0);
     signal Instruction_Bus : STD_LOGIC_VECTOR (11 downto 0);
-    signal pp,Jump_Flag,Add_Sub_select,Load_select,Clk_slow : STD_LOGIC;
+    signal pp1,pp2,Jump_Flag,Add_Sub_select,Load_select,Clk_slow : STD_LOGIC;
+    
     
 begin
+
+Seven_Segment : LUT_16_7 
+    Port map( address => Resister_Bank_Q1,
+              data => SegDis);
 
 Slow_Clk0 : Slow_Clk 
     port map ( Clk_in => Clk, 
                Clk_out => Clk_slow);  
+--Clk=>Clk;
 
 PC_0 : Program_Counter_3_bit
     Port map( I  => PC_0_In,
               Res  => Reset,
-              Clk  => Clk_slow,
+             Clk  => Clk_slow,
+            --  Clk=>Clk,
               Q  => Sig_PC_0); -- 3_bit Adder & ROM
 
 PR_0 : Program_Rom 
@@ -164,38 +175,38 @@ RCA_3_0 : RCA_3
     Port map( A => Sig_PC_0,
               B  => "001",
               C_in => '0',
-              S => RCA_3_0_S,   
-              C_out => pp );
+              S => RCA_3_0_S );
       
 
 Mux_2_way_3_bit_0 : Mux_2_way_3_bit
-    Port map( R1 => RCA_3_0_S,
-              R2 => Address_Jump, -- Instruction decoder output
+    Port map( R0 => RCA_3_0_S,
+              R1 => Address_Jump, -- Instruction decoder output
               S => Jump_Flag,     -- Instruction decoder output
               EN => '1',
               Y => PC_0_In);      --use for pc_0
 
 RC_Add_Sub_4_0 : RC_Add_Sub_4
-    Port map( A => Num_1_bit_4 ,       -- 8 way mux input
-              B => Num_2_bit_4 , 
+    Port map( A => Num_2_bit_4 ,       -- 8 way mux input
+              B => Num_1_bit_4 , 
               M => Add_Sub_select,     -- Ins_dec Output
-              C_out => pp,             -- noramal variable (Not used)
+              C_out => Zero,             -- Zero LED
               Over_Flow => Over_Flow,
               S => Add_Sub_out);       -- 2 way 4 bit one input
                
 Mux_2_way_4_bit_0 : Mux_2_way_4_bit
     Port map( R1 => Add_Sub_out,
-              R2 => Immediate_val,     -- Instruction decoder output
+              R0 => Immediate_val,     -- Instruction decoder output
               S => Load_select,        -- Instruction decoder output
               EN => '1',
               Y => ROM_input);
 
-Resister_Bank_0 : Resister_Bank 
+Resister_Bank_0 : Register_Bank 
     Port map( R => ROM_input,
-              Res => '0',
+              Res => Reset,
               Reg_EN => reg_en,      -- Instruction decoder register EN
               Clk => Clk_slow,
-              EN => '1',
+          --    EN => '1',
+            --  Clk=>Clk,
               Q0 => Resister_Bank_Q0,
               Q1 => Resister_Bank_Q1,
               Q2 => Resister_Bank_Q2,
@@ -243,4 +254,7 @@ Instruction_Decoder_0 : Instruction_Decoder
               Jump_Flag => Jump_Flag,             -- Mux_2_way_3_bit input 
               Address_Jump => Address_Jump);      -- Mux_2_way_3_bit input
 
+Led_out <= Resister_Bank_Q1;
+
+Select_EN <= "0110";
 end Behavioral;

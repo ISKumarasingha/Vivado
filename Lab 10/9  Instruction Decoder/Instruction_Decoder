@@ -18,7 +18,6 @@
 -- 
 ----------------------------------------------------------------------------------
 
-
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 
@@ -53,7 +52,7 @@ component Decoder_2_to_4
 end component;
 
 signal ins_select : STD_LOGIC_VECTOR (11 downto 10);
-signal Dec_out ,l : STD_LOGIC_VECTOR (3 downto 0 );
+signal Dec_out : STD_LOGIC_VECTOR (3 downto 0 );
 signal en , Q , D : STD_LOGIC ;
 
 
@@ -67,15 +66,19 @@ Decoder_0 : Decoder_2_to_4
 
 Reg_EN <= Instruction (9 downto 7); -- Select Register Enable 
 
-Load_Select <=(Dec_out(2) OR Dec_out(3)) AND ( NOT Instruction(0) ) ; -- select 4_bit adder_sub_value or Immediate value 
+--Load_Select <=(Dec_out(2) OR Dec_out(3)) AND ( NOT Instruction(0) ) ; -- select 4_bit adder_sub_value or Immediate value 
+Load_Select <= NOT (Dec_out(2)); -- selector 0
 
 Immediate_Value <= Instruction (3 downto 0); 
 
 Reg_S_Mux_1 <= Instruction (9 downto 7);
+
 Reg_S_Mux_2 <= Instruction (6 downto 4);
 
-M_Add_Sub <= ( Dec_out(0) OR Dec_out(1) ) AND Instruction (10);
+M_Add_Sub <= ( Dec_out(0) OR Dec_out(1) ) AND Instruction (10); -- ADD-Sub M
 
-Jump_Flag <= Dec_out (3);
-Address_Jump <= Instruction (2 downto 0);
+Jump_Flag <= (Dec_out(3))AND (NOT(Reg_Check_Jump(0) OR (Reg_Check_Jump(1)) OR (Reg_Check_Jump(2)) OR (Reg_Check_Jump(3))));
+
+Address_Jump <= (Instruction (2 downto 0));
+
 end Behavioral;

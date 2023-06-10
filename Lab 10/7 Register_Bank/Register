@@ -4,7 +4,7 @@
 -- 
 -- Create Date: 05/31/2023 03:38:12 PM
 -- Design Name: 
--- Module Name: Register - Behavioral
+-- Module Name: Resister_Bank - Behavioral
 -- Project Name: 
 -- Target Devices: 
 -- Tool Versions: 
@@ -63,16 +63,16 @@ end Reg;
 architecture Behavioral of Reg is
 
 begin
+
  process (Clk, Res) begin
-   if (rising_edge(Clk)) then
-     if Res='1' then
-       Q<="0000";
-      end if;
-    end if;
-   if (rising_edge(Clk)) then
+  if (rising_edge(Clk)) then
       if EN='1' then
-         Q<=D;
-      end if;
+      Q<=D;
    end if;
- end process;
+    if Res='1' then
+      Q<="0000";
+     end if;
+    end if;
+   
+end process;
 end Behavioral;

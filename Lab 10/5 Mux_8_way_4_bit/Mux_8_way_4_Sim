@@ -37,7 +37,7 @@ end Mux_8_way_4_bit_Sim;
 
 architecture Behavioral of Mux_8_way_4_bit_Sim is
 COMPONENT Mux_8_way_4_bit
- Port ( R0 : in STD_LOGIC_VECTOR (3 downto 0);
+ Port (   R0 : in STD_LOGIC_VECTOR (3 downto 0);
           R1 : in STD_LOGIC_VECTOR (3 downto 0);
           R2 : in STD_LOGIC_VECTOR (3 downto 0);
           R3 : in STD_LOGIC_VECTOR (3 downto 0);
@@ -50,49 +50,43 @@ COMPONENT Mux_8_way_4_bit
           Y : out STD_LOGIC_VECTOR (3 downto 0));
 
 END COMPONENT;
-SIGNAL R0,R1,R2,R3,R4,R5,R6,R7,Y:STD_LOGIC_VECTOR (3 downto 0);
-SIGNAL S:STD_LOGIC_VECTOR (2 downto 0);
-SIGNAL EN:STD_LOGIC ;
+    SIGNAL R0,R1,R2,R3,R4,R5,R6,R7,Y:STD_LOGIC_VECTOR (3 downto 0);
+    SIGNAL S:STD_LOGIC_VECTOR (2 downto 0);
+    SIGNAL EN:STD_LOGIC ;
 begin
 UUT : Mux_8_way_4_bit  PORT MAP (
-R0=>R0,
-R1=>R1,
-R2=>R2,
-R3=>R3,
-R4=>R4,
-R5=>R5,
-R6=>R6,
-R7=>R7,
-Y=>Y,
-S=>S,
-EN=>EN
-
+        R0=>R0,
+        R1=>R1,
+        R2=>R2,
+        R3=>R3,
+        R4=>R4,
+        R5=>R5,
+        R6=>R6,
+        R7=>R7,
+        Y=>Y,
+        S=>S,
+        EN=>EN
 );
+
 process
 begin
-EN<='1';
-R0<="0000";
-R1<="0001";
-R2<="0010";
-R3<="0111";
-R4<="1000";
-R5<="1011";
-R6<="1111";
-R7<="1000";
-S<="000";
-wait for 100ns;
-S<="000";
-wait for 100ns;
-S<="001";
-wait for 100ns;
-S<="010";
-wait;
-
-
-
-
+    EN<='1';
+    R0<="0000";
+    R1<="0001";
+    R2<="0010";
+    R3<="0111";
+    R4<="1000";
+    R5<="1011";
+    R6<="1111";
+    R7<="1001";
+    S<="000";
+    wait for 100ns;
+    S<="001";
+    wait for 100ns;
+    S<="010";
+    wait for 100ns;
+    S<="111";
+    wait;
 
 end process;
-
-
 end Behavioral;

@@ -50,32 +50,25 @@ signal S,EN : STD_LOGIC;
 
 begin
 UUT : Mux_2_way_4_bit PORT MAP (
- R0=>R0,
- R1=>R1,
- S=>S,
- EN=>EN,
- Y=>Y
-);
+             R0=>R0,
+             R1=>R1,
+             S=>S,
+             EN=>EN,
+             Y=>Y
+            );
 
 process 
 begin
 EN<='1';
-R0(0)<='1';
-R0(1)<='1';
-R0(2)<='1';
-R0(3)<='1';
-R1(0)<='0';
-R1(1)<='0';
-R1(2)<='0';
-R1(3)<='0';
-S<='0';
 
+R0 <= "1111";
+R1 <= "0100";
+
+S<='0';
 wait for 100ns;
 S<='1';
 wait;
 
 
 end process;
-
-
 end Behavioral;

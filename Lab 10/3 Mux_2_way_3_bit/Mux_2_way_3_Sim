@@ -50,26 +50,23 @@ signal S,EN :STD_LOGIC;
 
 begin
 UUT :Mux_2_way_3_bit PORT MAP (
-R0 =>R0,
-R1=>R1,
-Y=>Y,
-S=>S,
-EN=>EN
-
+            R0 =>R0,
+            R1=>R1,
+            Y=>Y,
+            S=>S,
+            EN=>EN
 );
 process
 begin
-EN <='1';
-R0<="000";
+    EN <='1';
+    R0<="000";
 
-R1<="111";
+    R1<="111";
 
-S <='0';
-WAIT FOR 100ns;
-S<='1';
-WAIT;
+    S <='0';
+    WAIT FOR 100ns;
+    S<='1';
+    WAIT;
 
 end process;
-
-
 end Behavioral;
