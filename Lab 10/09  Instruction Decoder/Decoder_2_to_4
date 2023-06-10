@@ -43,3 +43,5 @@ begin
      Y(3) <= I(0) AND I(1) AND EN;         
 
 end Behavioral;
+
+
